@@ -31,7 +31,7 @@ document.getElementById('create-token-button').addEventListener('click', async (
     try {
         const mint = await splToken.Token.createMint(
             connection,
-            new solanaWeb3.Keypair(),
+            new solanaWeb3.Keypair(), // تأكد من استخدام مفتاح صالح
             new solanaWeb3.PublicKey(wallet),
             null,
             totalSupply,
