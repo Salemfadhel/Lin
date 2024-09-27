@@ -2,7 +2,7 @@ let connection;
 let wallet;
 
 document.getElementById('connect-button').addEventListener('click', async () => {
-    if (window.solana) {
+    if (window.solana && window.solana.isPhantom) {
         try {
             const response = await window.solana.connect();
             wallet = response.publicKey.toString();
@@ -31,8 +31,8 @@ document.getElementById('create-token-button').addEventListener('click', async (
     try {
         const mint = await splToken.Token.createMint(
             connection,
-            new solanaWeb3.Keypair(),
-            wallet,
+            new solanaWeb3.Keypair(), // استخدم مفتاح جديد
+            new solanaWeb3.PublicKey(wallet),
             null,
             totalSupply,
             splToken.TOKEN_PROGRAM_ID
