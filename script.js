@@ -31,7 +31,7 @@ document.getElementById('create-token-button').addEventListener('click', async (
     try {
         const mintKeypair = solanaWeb3.Keypair.generate(); // مفتاح جديد لإنشاء العملة
 
-        // إنشاء المعاملة
+        // إعداد المعاملة
         const transaction = new solanaWeb3.Transaction().add(
             splToken.Token.createMint(
                 connection,
@@ -44,8 +44,16 @@ document.getElementById('create-token-button').addEventListener('click', async (
         );
 
         // توقيع المعاملة
-        const { signature } = await window.solana.signAndSendTransaction(transaction, {skipPreflight: false});
+        const { blockhash } = await connection.getRecentBlockhash();
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = new solanaWeb3.PublicKey(wallet);
 
+        // توقيع المعاملة بواسطة محفظة Phantom
+        const signedTransaction = await window.solana.signTransaction(transaction);
+
+        // إرسال المعاملة
+        const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+        
         // انتظار تأكيد المعاملة
         await connection.confirmTransaction(signature, 'confirmed');
 
