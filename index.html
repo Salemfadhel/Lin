@@ -6,14 +6,16 @@
     <title>Create Solana Token</title>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js/dist/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/spl-token/dist/spl-token.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div>
-        <button id="connect-button">Connect Wallet</button>
+    <div class="container">
+        <button id="connect-button" class="btn">Connect Wallet</button>
         <input type="text" id="token-name" placeholder="Token Name" />
         <input type="text" id="token-symbol" placeholder="Token Symbol" />
         <input type="number" id="token-supply" placeholder="Total Supply" />
-        <button id="create-token-button">Create Token</button>
+        <button id="create-token-button" class="btn">Create Token</button>
+        <p id="status"></p>
     </div>
     <script src="script.js"></script>
 </body>
