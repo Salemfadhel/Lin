@@ -29,17 +29,28 @@ document.getElementById('create-token-button').addEventListener('click', async (
     connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'), 'confirmed');
 
     try {
-        const mint = await splToken.Token.createMint(
-            connection,
-            new solanaWeb3.Keypair(), // تأكد من استخدام مفتاح صالح
-            new solanaWeb3.PublicKey(wallet),
-            null,
-            totalSupply,
-            splToken.TOKEN_PROGRAM_ID
+        const mintKeypair = solanaWeb3.Keypair.generate(); // مفتاح جديد لإنشاء العملة
+
+        // إنشاء المعاملة
+        const transaction = new solanaWeb3.Transaction().add(
+            splToken.Token.createMint(
+                connection,
+                mintKeypair,
+                new solanaWeb3.PublicKey(wallet),
+                null,
+                totalSupply,
+                splToken.TOKEN_PROGRAM_ID
+            )
         );
 
-        updateStatus(`Token created: ${mint.toBase58()}`);
-        checkTokenOnSolscan(mint.toBase58());
+        // توقيع المعاملة
+        const { signature } = await window.solana.signAndSendTransaction(transaction, {skipPreflight: false});
+
+        // انتظار تأكيد المعاملة
+        await connection.confirmTransaction(signature, 'confirmed');
+
+        updateStatus(`Token created: ${mintKeypair.publicKey.toBase58()}`);
+        checkTokenOnSolscan(mintKeypair.publicKey.toBase58());
     } catch (err) {
         updateStatus('Failed to create token. Check console for details.');
         console.error('Failed to create token:', err);
